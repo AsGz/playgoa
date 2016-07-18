@@ -61,3 +61,48 @@ func (ctx *AddOperandsContext) OK(resp []byte) error {
 	_, err := ctx.ResponseData.Write(resp)
 	return err
 }
+
+// DesOperandsContext provides the operands des action context.
+type DesOperandsContext struct {
+	context.Context
+	*goa.ResponseData
+	*goa.RequestData
+	Service *goa.Service
+	Left    int
+	Right   int
+}
+
+// NewDesOperandsContext parses the incoming request URL and body, performs validations and creates the
+// context used by the operands controller des action.
+func NewDesOperandsContext(ctx context.Context, service *goa.Service) (*DesOperandsContext, error) {
+	var err error
+	req := goa.ContextRequest(ctx)
+	rctx := DesOperandsContext{Context: ctx, ResponseData: goa.ContextResponse(ctx), RequestData: req, Service: service}
+	paramLeft := req.Params["left"]
+	if len(paramLeft) > 0 {
+		rawLeft := paramLeft[0]
+		if left, err2 := strconv.Atoi(rawLeft); err2 == nil {
+			rctx.Left = left
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("left", rawLeft, "integer"))
+		}
+	}
+	paramRight := req.Params["right"]
+	if len(paramRight) > 0 {
+		rawRight := paramRight[0]
+		if right, err2 := strconv.Atoi(rawRight); err2 == nil {
+			rctx.Right = right
+		} else {
+			err = goa.MergeErrors(err, goa.InvalidParamTypeError("right", rawRight, "integer"))
+		}
+	}
+	return &rctx, err
+}
+
+// OK sends a HTTP response with status code 200.
+func (ctx *DesOperandsContext) OK(resp []byte) error {
+	ctx.ResponseData.Header().Set("Content-Type", "text/plain")
+	ctx.ResponseData.WriteHeader(200)
+	_, err := ctx.ResponseData.Write(resp)
+	return err
+}

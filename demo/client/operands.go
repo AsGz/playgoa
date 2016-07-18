@@ -34,3 +34,31 @@ func (c *Client) NewAddOperandsRequest(ctx context.Context, path string) (*http.
 	}
 	return req, nil
 }
+
+// DesOperandsPath computes a request path to the des action of operands.
+func DesOperandsPath(left int, right int) string {
+	return fmt.Sprintf("/des/%v/%v", left, right)
+}
+
+// des returns the sum of the left and right parameters in the response body
+func (c *Client) DesOperands(ctx context.Context, path string) (*http.Response, error) {
+	req, err := c.NewDesOperandsRequest(ctx, path)
+	if err != nil {
+		return nil, err
+	}
+	return c.Client.Do(ctx, req)
+}
+
+// NewDesOperandsRequest create the request corresponding to the des action endpoint of the operands resource.
+func (c *Client) NewDesOperandsRequest(ctx context.Context, path string) (*http.Request, error) {
+	scheme := c.Scheme
+	if scheme == "" {
+		scheme = "http"
+	}
+	u := url.URL{Host: c.Host, Scheme: scheme, Path: path}
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		return nil, err
+	}
+	return req, nil
+}

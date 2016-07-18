@@ -1,8 +1,10 @@
 package main
 
 import (
-	"github.com/goadesign/goa"
+	"fmt"
 	"playgoa/demo/app"
+
+	"github.com/goadesign/goa"
 )
 
 // OperandsController implements the operands resource.
@@ -17,6 +19,16 @@ func NewOperandsController(service *goa.Service) *OperandsController {
 
 // Add runs the add action.
 func (c *OperandsController) Add(ctx *app.AddOperandsContext) error {
-	// TBD: implement
+	r := ctx.Left + ctx.Right
+	msg := fmt.Sprintf(`{"result":%d}`, r)
+	ctx.OK([]byte(msg))
+	return nil
+}
+
+// Add runs the add action.
+func (c *OperandsController) Des(ctx *app.DesOperandsContext) error {
+	r := ctx.Left - ctx.Right
+	msg := fmt.Sprintf(`{"result":%d}`, r)
+	ctx.OK([]byte(msg))
 	return nil
 }

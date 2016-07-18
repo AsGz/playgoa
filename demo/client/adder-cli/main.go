@@ -47,5 +47,18 @@ func RegisterCommands(app *cobra.Command, c *client.Client) {
 	tmp1.RegisterFlags(sub, c)
 	command.AddCommand(sub)
 	app.AddCommand(command)
+	command = &cobra.Command{
+		Use:   "des",
+		Short: `des returns the sum of the left and right parameters in the response body`,
+	}
+	tmp2 := new(DesOperandsCommand)
+	sub = &cobra.Command{
+		Use:   `operands [/des/LEFT/RIGHT] or`,
+		Short: ``,
+		RunE:  func(cmd *cobra.Command, args []string) error { return tmp2.Run(c, args) },
+	}
+	tmp2.RegisterFlags(sub, c)
+	command.AddCommand(sub)
+	app.AddCommand(command)
 
 }
